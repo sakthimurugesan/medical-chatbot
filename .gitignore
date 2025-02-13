@@ -1,0 +1,6 @@
+chatbot/.idea/*
+chatbot/venv/*
+chatbot/nltk_data/*
+chatbot_fb/Backend/.idea/*
+chatbot_fb/Backend/venv/*
+chatbot_fb/Frontend/node_modules/*

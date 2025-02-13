@@ -1,0 +1,203 @@
+sb-kr4p329088654@personal.example.com
+W7Y3)jcf
+ 
+AT8ko-dakUiXRKgRbQwpYjf2kXSlUZJKmmFlOd6R6L3529ttG7nOIZCYKmPJIkznmhcQ8CvQX2Hvgpdx
+
+add more field to doctors
+add transaction id to db
+if not logined redirect user from payment,appointment button,
+after login redirect to previous page
+create a new page dept-doctors
+
+
+import React, { useState, useEffect } from 'react';
+import ChatBot from 'react-simple-chatbot'; // Ensure correct import
+import axios from 'axios';
+import { ThemeProvider } from 'styled-components';
+
+// Define a theme for the chatbot
+const theme = {
+  background: '#f5f8fb',
+  fontFamily: 'Arial, sans-serif',
+  headerBgColor: '#4caf50',
+  headerFontColor: '#fff',
+  headerFontSize: '16px',
+  botBubbleColor: '#4caf50',
+  botFontColor: '#fff',
+  userBubbleColor: '#fff',
+  userFontColor: '#4caf50',
+};
+
+// Custom step to handle fetching the server's response
+const FetchResponseStep = ({ steps, triggerNextStep }) => {
+  const userMessage = steps.userMessage.value;
+  const [botMessage, setBotMessage] = useState('Fetching response...');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Send the user message to the server
+    axios.post('http://127.0.0.1:5000/predict', { message: userMessage })
+      .then((response) => {
+        const botReply = response.data.tag; // Get the response from the server
+        setBotMessage(botReply); // Set the bot message state to display
+        triggerNextStep({ trigger: 'userMessage' }); // Move back to the user input step
+      })
+      .catch(() => {
+        setBotMessage('Error: Could not connect to the server.'); // Set error message
+      })
+      .finally(() => {
+        setLoading(false); // Stop loading when done
+        setTimeout(() => {
+         
+        }, 1500);
+      });
+  }, [userMessage, triggerNextStep]);
+
+  return <div>{loading ? 'Loading...' : botMessage}</div>; // Render either loading state or fetched message
+};
+
+// Main Chatbot component
+const Chatbot = () => {
+  const steps = [
+    {
+      id: '1',
+      message: 'Hello! How can I help you today?',
+      trigger: 'userMessage',
+    },
+    {
+      id: 'userMessage',
+      user: true,
+      trigger: 'fetchResponse', // Trigger the step that fetches the bot's response
+    },
+    {
+      id: 'fetchResponse',
+      component: <FetchResponseStep />, // Custom step for server response
+      asMessage: true, // Display bot's response as a message
+    },
+  ];
+
+  return (
+    <ThemeProvider theme={theme}>
+      <ChatBot steps={steps} />
+    </ThemeProvider>
+  );
+};
+
+export default Chatbot;
+
+
+
+
+
+
+
+
+
+import React, { useState, useEffect } from 'react';
+import ChatBot from 'react-simple-chatbot'; // Ensure correct import
+import axios from 'axios';
+import { ThemeProvider } from 'styled-components';
+import { v4 as uuidv4 } from 'uuid'; // Import uuid for unique ID generation
+
+// Define a theme for the chatbot
+const theme = {
+  background: '#f5f8fb',
+  fontFamily: 'Arial, sans-serif',
+  headerBgColor: '#4caf50',
+  headerFontColor: '#fff',
+  headerFontSize: '16px',
+  botBubbleColor: '#4caf50',
+  botFontColor: '#fff',
+  userBubbleColor: '#fff',
+  userFontColor: '#4caf50',
+};
+
+// Custom step to handle fetching the server's response
+const FetchResponseStep = ({ steps, triggerNextStep, setChatHistory }) => {
+  const userMessage = steps.userMessage.value;
+  const [botMessage, setBotMessage] = useState('Fetching response...');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Generate a unique ID for the message
+    const requestId = uuidv4();
+
+    // Send the user message to the server
+    axios.post('http://127.0.0.1:5000/predict', { message: userMessage })
+      .then((response) => {
+        const botReply = response.data.tag; // Get the response from the server
+        setBotMessage(botReply); // Set the bot message state to display
+
+        // Create a chat entry
+        const chatEntry = { id: requestId, user: userMessage, bot: botReply };
+
+        // Retrieve existing chat history
+        const chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
+
+        // Check if this entry already exists to prevent duplicates
+        if (!chatHistory.some(entry => entry.user === userMessage && entry.bot === botReply)) {
+          chatHistory.push(chatEntry);
+          localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+          setChatHistory(chatHistory); // Update the chat history state
+        }
+
+        triggerNextStep({ trigger: 'userMessage' }); // Move back to the user input step
+      })
+      .catch(() => {
+        const errorMessage = 'Error: Could not connect to the server.'; // Set error message
+        setBotMessage(errorMessage);
+      })
+      .finally(() => {
+        setLoading(false); // Stop loading when done
+      });
+  }, [userMessage, triggerNextStep, setChatHistory]);
+
+  return <div>{loading ? 'Loading...' : botMessage}</div>; // Render either loading state or fetched message
+};
+
+// Main Chatbot component
+const Chatbot = () => {
+  const [chatHistory, setChatHistory] = useState([]);
+
+  useEffect(() => {
+    // Load chat history from local storage on mount
+    const storedChatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
+    setChatHistory(storedChatHistory);
+  }, []);
+
+  const steps = [
+    {
+      id: '1',
+      message: 'Hello! How can I help you today?',
+      trigger: 'userMessage',
+    },
+    {
+      id: 'userMessage',
+      user: true,
+      trigger: 'fetchResponse', // Trigger the step that fetches the bot's response
+    },
+    {
+      id: 'fetchResponse',
+      component: <FetchResponseStep setChatHistory={setChatHistory} />, // Pass setChatHistory as a prop
+      asMessage: true, // Display bot's response as a message
+    },
+  ];
+
+  return (
+    <ThemeProvider theme={theme}>
+      <div>
+        <ChatBot steps={steps} />
+        <div>
+          {chatHistory.map((message) => (
+            <div key={message.id}>
+              <strong>User:</strong> {message.user}<br />
+              <strong>Bot:</strong> {message.bot}<br />
+            </div>
+          ))} {/* Display chat history */}
+        </div>
+      </div>
+    </ThemeProvider>
+  );
+};
+
+export default Chatbot;

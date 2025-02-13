@@ -1,0 +1,88 @@
+/* src/Chatbot.css */
+.chatbot {
+    position: fixed; /* Fixed to the viewport */
+    bottom: 80px; /* Space from the bottom */
+    right: 20px; /* Space from the right */
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 15px; /* Rounded corners */
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+    z-index: 1000; /* Ensure it appears above other content */
+    background-color: white; /* Background color for visibility */
+}
+
+.chatbot__messages {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ccc;
+}
+
+.chatbot__message {
+    display: flex;
+    align-items: center; /* Center icon and text vertically */
+    margin: 5px 0;
+    border-radius: 10px; /* Rounded corners for message bubbles */
+    padding: 5px 10px; /* Space around text */
+}
+
+.chatbot__user {
+    background-color: #e1f5fe; /* Light blue background for user messages */
+    color: blue;
+    justify-content: flex-end; /* Align user messages to the right */
+}
+
+.chatbot__bot {
+    background-color: #f1f8e9; /* Light green background for bot messages */
+    color: green;
+    justify-content: flex-start; /* Align bot messages to the left */
+}
+
+.chatbot__icon {
+    margin-right: 8px; /* Space between icon and text */
+    font-size: 18px; /* Adjust icon size */
+}
+
+.chatbot__form {
+    display: flex;
+}
+
+.chatbot__input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-top: 1px solid #ccc;
+    border-radius: 10px; /* Rounded corners for input */
+}
+
+.chatbot__button {
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 10px; /* Rounded corners for button */
+}
+
+/* Styles for the floating message icon */
+.chatbot__icon-container {
+    position: fixed;
+    bottom: 20px; /* Space from the bottom */
+    right: 20px; /* Space from the right */
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    padding: 15px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Ensure it appears above other content */
+    font-size: 24px; /* Adjust icon size */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.chatbot__icon-container:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
