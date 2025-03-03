@@ -30,9 +30,9 @@ SECRET_KEY = 'django-insecure-wui-!%cfiu6s&fy2qkmk51p1_1&=)tt+(*e(o4xcy4c$oo-yyx
 DEBUG = True
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dfiyrqut1',
-    'API_KEY': '327587213475877',
-    'API_SECRET': '97VBYey4niCLGNgFucWURQlaxCo'
+    'CLOUD_NAME': '',
+    'API_KEY': '',
+    'API_SECRET': ''
 }
 
 MEDIA_URL = '/media/'
@@ -152,8 +152,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = '727722euai053@skcet.ac.in'  # Your Gmail address
-EMAIL_HOST_PASSWORD = '$@k+Hisakth1'  # App-specific password (not your usual Gmail password)
+EMAIL_HOST_USER = ''  # Your Gmail address
+EMAIL_HOST_PASSWORD = '  # App-specific password (not your usual Gmail password)
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 #
 # CLOUDINARY_STORAGE = {
